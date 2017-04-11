@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>放大镜多张图</title>
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		ul,ol,li{
+			list-style: none;
+		}
+		.box{
+			width: 900px;
+			height: 400px;
+			margin: 30px auto;
+		}
+		.min{
+			width: 400px;
+			height: 400px;
+			float: left;
+			position: relative;
+		}
+		.min ul li{
+			width: 400px;
+			height: 400px;
+			position: absolute;
+			top: 0;
+			left: 0;
+			display: none;
+		}
+		.min ul li.on{
+			z-index: 1px;
+			display: block;
+		}
+		.min ul li img{
+			width: 400px;
+			height: 400px;
+		}
+		.min p{
+			width: 200px;
+			height: 200px;
+			background: blue;
+			opacity: 0.5;
+			position: absolute;
+			top: 0;
+			left: 0;
+			display: none;
+		}
+		.max{
+			width: 400px;
+			height: 400px;
+			overflow: hidden;
+			float: left;
+			margin-left: 100px;
+			position: relative;
+			display: none;
+		}
+		.max ul li img{
+			width:800px;
+			height: 800px;
+			position: absolute;
+			top: 0;
+			left: 0; 
+			display: none;
+		}
+		.max ul li img.on{
+			display: block;
+			z-index: 1;
+		}
+		.img{
+			width: 400px;
+			height: 75px;
+			margin-left: 230px;
+			margin-top: -25px;
+		}
+		.img img{
+			width: 75px;
+			height: 75px;
+			float: left;
+			margin-left: 2px;
+			border: 1px solid #fff;
+		}
+		.img img.on{
+			border: 1px solid red;
+		}
+	</style>
+</head>
+<body>
+	<div class="box" id="box">
+		<div class="min" id="min">
+			<ul>
+				<li class="on"><img src="img/1max.jpg" alt=""></li>
+				<li><img src="img/2max.jpg" alt=""></li>
+				<li><img src="img/3max.jpg" alt=""></li>
+				<li><img src="img/4max.jpg" alt=""></li>
+				<li><img src="img/5max.jpg" alt=""></li>
+			</ul>
+			<p id="p"></p>
+		</div>
+		<div class="max" id="max">
+			<ul>
+				<li><img src="img/1max.jpg" alt="" class="on"></li>
+				<li><img src="img/2max.jpg" alt=""></li>
+				<li><img src="img/3max.jpg" alt=""></li>
+				<li><img src="img/4max.jpg" alt=""></li>
+				<li><img src="img/5max.jpg" alt=""></li>
+			</ul>
+		</div>
+	</div>
+	<div class="img" id="img">
+		<ul>
+			<li><img src="img/1min.jpg" alt="" class="on"></li>
+			<li><img src="img/2min.jpg" alt=""></li>
+			<li><img src="img/3min.jpg" alt=""></li>
+			<li><img src="img/4min.jpg" alt=""></li>
+			<li><img src="img/5min.jpg" alt=""></li>
+		</ul>
+	</div>
+<script>
+	//获取变量	
+	var box=document.getElementById("box"),
+		min=document.getElementById("min"),
+		minpics=min.getElementsByTagName("li"),
+		max=document.getElementById("max"),
+		maxpics=max.getElementsByTagName("img"),
+		img=document.getElementById("img"),
+		imgpics=img.getElementsByTagName("img"),
+		p=document.getElementById("p"),
+		j=0;
+		console.log(max)
+		console.log(min)
+		console.log(img)
+	//封装函数
+	function auto(){
+		j++;
+		if(j>imgpics.length-1)j=0
+		//清除左边大盒子的样式
+		for(var i=0;i<minpics.length;i++){
+			minpics[i].className="";
+		}
+		//对应添加样式
+		minpics[j].className="on";
+		//清除右边大盒子的样式
+		for(var i=0;i<maxpics.length;i++){
+			maxpics[i].className="";
+		}
+		//对应添加样式
+		maxpics[j].className="on";
+		//清除小图片的样式
+		for(var i=0;i<imgpics.length;i++){
+			imgpics[i].className="";
+		}
+		//对应添加样式
+		imgpics[j].className="on";
+
+	}
+	//划过小图片效果
+	for(var k=0;k<imgpics.length;k++){
+		imgpics[k].index=k;
+		imgpics[k].onclick=function(){
+			j=this.index-1;
+			auto();
+		}
+	}
+	//鼠标移动效果
+	box.onmousemove=function(e){
+		//让蓝色阴影和大盒子图片显示
+		p.style.display="block";
+		max.style.display="block";
+		//获取事件对象，为获取光标位置做准备
+		var event=e||window.event;
+		//获取距左总距离
+		var L=event.clientX-box.offsetLeft-100;
+		//获取距上总距离
+		var T=event.clientY-box.offsetTop-100;
+		//设置边界
+		if(L<0)L=0;
+		if(T<0)T=0;
+		if(T>=200)T=200;
+		if(L>=200)L=200;
+		//阴影盒子移动
+		p.style.left=L+"px";
+		p.style.top=T+"px";
+		//右边盒子效果	
+		maxpics[j].style.left=-2*L+"px";
+		maxpics[j].style.top=-2*T+"px";
+	}
+	//鼠标离开效果
+	box.onmouseout=function(){
+		p.style.display="none";
+		max.style.display="none";
+	}
+</script>	
+</body>
+</html>
